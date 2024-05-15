@@ -1,0 +1,65 @@
+/*
+ 
+ AREA MYDATA,DATA,READWRITE
+a dcd 10, 4, 1, 2, 34
+a_size equ 5
+
+ AREA MYCODE, CODE, READONLY
+ ENTRY
+ EXPORT main
+
+
+insertion_sort proc
+ 
+ mov r2, #0    ; index -> moves forward
+
+
+outer_loop
+
+  cmp r2, r1    ;chech if index == array_size  
+  beq out_of_loop
+  
+  mov r4, r2    ;secondary index->moves backward to check array until that point is in order or not
+ 
+ 
+inner_loop
+  subs r4,r4,#1    
+  adds r6,r4,#1    ;temporary index
+  cmp r4, #0
+  blt out_of_inner_loop
+  
+  ldr r3, [r0, r4, lsl #2] ;two adjacent elements are fetched to compare
+  ldr r5, [r0, r6, lsl #2]
+  
+  cmp r3,r5
+  itte gt
+  strgt r3, [r0, r6, lsl #2]
+  strgt r5, [r0, r4, lsl #2] ;swaps memory address if found in out of order
+  ble out_of_inner_loop
+ 
+ b inner_loop
+ 
+out_of_inner_loop
+  adds r2,r2,#1
+  b outer_loop 
+ 
+ 
+out_of_loop 
+  bx lr
+  endp
+
+
+
+main 
+
+  ldr r0, =a     ;store address of array a
+  mov r1, #a_size   ;store array size
+  
+  bl insertion_sort
+
+
+STOP B STOP
+ END
+ 
+ 
+*/

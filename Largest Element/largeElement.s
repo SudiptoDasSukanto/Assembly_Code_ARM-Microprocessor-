@@ -1,0 +1,19 @@
+	AREA largeElement, CODE, READONLY
+	ENTRY
+	EXPORT main
+ARR DCD 1,3,4,3,5,5,7,3,2
+main
+	ADR R0, ARR
+	MOV R1, #0
+	MOV R2, #0
+LOOP
+	LDR R3, [R0]
+	CMP R3, R2
+	MOVGT R2, R3
+	ADD R0, R0, #4
+	ADD R1, R1, #1
+	CMP R1, #9
+	BNE LOOP
+	
+	
+STOP B STOP

@@ -1,0 +1,55 @@
+ENTRY
+
+    EXPORT main
+
+ ALIGN
+array DCD 1, 4, 10, 20, 30, 42, 50, 60   ; Example sorted array
+arr_length EQU 8                              ; Length of the array
+main
+    ; Initialize the array and the target value
+    LDR R0, =array       ; Load the base address of the array into R0
+    MOV R1, #0           ; Initialize low index (i) to 0
+    LDR R2, =arr_length  ; Load the length of the array into R2
+    SUB R2, R2, #1       ; Convert length to the last index (j)
+    MOV R3, #41         ; Target value to search for
+
+binary_search_loop
+    CMP R1, R2           ; Compare low index (i) with high index (j)
+    BGT search_failed    ; If i > j, search failed
+
+    ; Calculate mid index
+    ADD R4, R1, R2       ; Calculate sum of low and high indices
+    LSRS R4, R4, #1      ; Divide by 2 (right shift by 1)
+
+    ; Load the value at mid index
+    LDR R5, [R0, R4, LSL #2]  ; Load the value at index (R0 + R4 * 4) into R5
+    CMP R5, R3                ; Compare mid value with target value
+    BEQ search_success        ; If mid value equals target value, search succeeded
+    BLT adjust_low_index      ; If mid value is less than target value, adjust low index
+    BGT adjust_high_index     ; If mid value is greater than target value, adjust high index
+
+adjust_low_index
+    ADD R1, R4, #1       ; Set low index to mid index + 1
+    B binary_search_loop ; Repeat binary search loop
+
+adjust_high_index
+    SUB R2, R4, #1       ; Set high index to mid index - 1
+    B binary_search_loop ; Repeat binary search loop
+
+search_success
+    ; Output the index where the target value was found
+    ; R4 contains the index where the target value was found
+    ; You can add your own code here to handle the success case
+    MOV R7,#1
+    B end_program
+
+search_failed
+    ; Output message indicating search failure
+    ; You can add your own code here to handle the failure case
+    MOV R8,#1
+
+end_program
+    ; End of program
+
+STOP B STOP
+    END

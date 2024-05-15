@@ -1,0 +1,35 @@
+arr DCD 4,13,4,5   ; Define an array of integers with initial values set to 0
+arr_length EQU 4                             ; Length of the array 
+
+ AREA BinarySearch, CODE, READONLY
+    ENTRY
+
+    EXPORT main
+
+main
+    MOV R5, #3                    ; Set R5 = 4, array size
+
+L1                                  ; First loop label (sorting passes)
+    MOV R6, R5                      ; Copy R5 to R6 for inner loop
+    ;LDR R0, =0X10000000            ; Load base address of the array into R0
+    LDR R0,=arr
+
+L2                                  ; Second loop label (individual comparisons)
+    LDR R1, [R0]                    ; Load the current element into R1
+    LDR R2, [R0, #4]                ; Load the next element into R2
+    CMP R1, R2                      ; Compare the current and next elements
+    BLO SKIP                        ; If R1 < R2, skip the swap (correct order for ascending sort)
+
+    STR R2, [R0]                    ; Swap the elements: Store R2 in place of R1
+    STR R1, [R0, #4]                ; Store R1 in place of R2
+
+SKIP                                ; Skip label
+    ADD R0, R0, #4                  ; Move to the next element
+    SUBS R6, #1                 ; Decrement the loop counter R6
+    BNE L2                          ; Continue the inner loop if R6 is not zero
+
+    SUBS R5, #1                 ; Decrement the outer loop counter R5
+    BNE L1                          ; Repeat the sorting pass if R5 is not zero
+
+    NOP                             ; No operation (can be removed, typically used for debugging)
+    END                             ; End of the file
